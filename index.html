@@ -443,14 +443,12 @@ const KEYS = {
   accessSecret: 'sbd_tw_access_secret',
 };
 
-// Twitter keys pre-loaded, only Anthropic key needs manual entry
+// Twitter keys — always overwrite to ensure latest keys are used
 (function() {
-  if (!localStorage.getItem('sbd_tw_api_key')) {
-    localStorage.setItem('sbd_tw_api_key',        'ljxeLozHQnOWkSakfFBpsGmTo');
-    localStorage.setItem('sbd_tw_api_secret',     'cbirIR8cxLQB6Ab0WdYNc5LdLlNnyKCr7hTyfRniRuJWsQ07cX');
-    localStorage.setItem('sbd_tw_access_token',   '1284191658242965509-raMDJXfzatnB9JcFErxn7vvd9kkN9p');
-    localStorage.setItem('sbd_tw_access_secret',  '0Hn6Thr9wWynUDYnNeRYddoNYDlm4o3z7zNQG3XFWV2Pu');
-  }
+  localStorage.setItem('sbd_tw_api_key',        'ljxeLozHQnOWkSakfFBpsGmTo');
+  localStorage.setItem('sbd_tw_api_secret',     'cbirIR8cxLQB6Ab0WdYNc5LdLlNnyKCr7hTyfRniRuJWsQ07cX');
+  localStorage.setItem('sbd_tw_access_token',   '1284191658242965509-raMDJXfzatnB9JcFErxn7vvd9kkN9p');
+  localStorage.setItem('sbd_tw_access_secret',  '0Hn6Thr9wWynUDYnNeRYddoNYDlm4o3z7zNQG3XFWV2Pu');
 })();
 
 function getKey(k)    { return localStorage.getItem(KEYS[k]) || ''; }
