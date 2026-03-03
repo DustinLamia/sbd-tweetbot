@@ -362,18 +362,14 @@
       <span class="logo-name">SPORTSBYDUSTIN</span>
       <span class="logo-sub">Tweet Bot</span>
     </div>
-    <div class="live-badge">● LIVE</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button id="setupBanner" onclick="openSettings()" style="background:rgba(0,180,166,0.15);color:#00B4A6;border:1px solid rgba(0,180,166,0.4);border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:0.5px;">⚙ API KEY</button>
+      <div class="live-badge">● LIVE</div>
+    </div>
   </div>
 
   <!-- Card -->
   <div class="card">
-
-    <!-- Setup button (only shows if Anthropic key missing) -->
-    <div id="setupBanner" style="display:none; margin-bottom:16px;">
-      <button onclick="openSettings()" style="width:100%;background:#00B4A6;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">
-        ⚙️ Enter API Key to Get Started
-      </button>
-    </div>
 
     <!-- Drop zone -->
     <div id="dropZone" class="drop-zone">
@@ -579,9 +575,8 @@ async function handleFile(rawFile) {
   } catch (err) {
     showScreen('drop');
 setTimeout(() => {
-  if (!localStorage.getItem('sbd_anthropic_key')) {
-    document.getElementById('setupBanner').style.display = 'block';
-    openSettings();
+  if (localStorage.getItem('sbd_anthropic_key')) {
+    document.getElementById('setupBanner').style.display = 'none';
   }
 }, 100);
     showError('❌ ' + err.message);
