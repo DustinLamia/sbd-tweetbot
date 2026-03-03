@@ -459,6 +459,7 @@ function hasAllKeys() {
 }
 
 function openSettings() {
+  document.getElementById('set_anthropicKey').value = localStorage.getItem('sbd_anthropic_key') || '';
   document.getElementById('set_apiKey').value       = getKey('apiKey');
   document.getElementById('set_apiSecret').value    = getKey('apiSecret');
   document.getElementById('set_accessToken').value  = getKey('accessToken');
@@ -472,6 +473,8 @@ function closeSettings() {
 }
 
 function saveSettings() {
+  const antKey = document.getElementById('set_anthropicKey').value.trim();
+  if (antKey) localStorage.setItem('sbd_anthropic_key', antKey);
   setKey('apiKey',       document.getElementById('set_apiKey').value.trim());
   setKey('apiSecret',    document.getElementById('set_apiSecret').value.trim());
   setKey('accessToken',  document.getElementById('set_accessToken').value.trim());
