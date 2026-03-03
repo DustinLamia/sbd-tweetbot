@@ -440,7 +440,15 @@ const KEYS = {
   accessSecret: 'sbd_tw_access_secret',
 };
 
-// Keys stored in localStorage only — enter them via the setup screen
+// Twitter keys pre-loaded, only Anthropic key needs manual entry
+(function() {
+  if (!localStorage.getItem('sbd_tw_api_key')) {
+    localStorage.setItem('sbd_tw_api_key',        'u5y0GXfLHjZyZFXaXoa6bBNjF');
+    localStorage.setItem('sbd_tw_api_secret',     '1cNfr5y5HQi10PSrIXXGOJiOJung5Yh1daHnci4eobnI39EDqi');
+    localStorage.setItem('sbd_tw_access_token',   '1284191658242965509-rzaiix4ex92vvYvejJEt18nCyt92r5');
+    localStorage.setItem('sbd_tw_access_secret',  '6cxn609H7wwiTau9uGpANLqmA2usd965QXvoYQq99RyAK');
+  }
+})();
 
 function getKey(k)    { return localStorage.getItem(KEYS[k]) || ''; }
 function setKey(k, v) { localStorage.setItem(KEYS[k], v); }
