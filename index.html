@@ -368,6 +368,13 @@
   <!-- Card -->
   <div class="card">
 
+    <!-- Setup button (only shows if Anthropic key missing) -->
+    <div id="setupBanner" style="display:none; margin-bottom:16px;">
+      <button onclick="openSettings()" style="width:100%;background:#00B4A6;color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">
+        ⚙️ Enter API Key to Get Started
+      </button>
+    </div>
+
     <!-- Drop zone -->
     <div id="dropZone" class="drop-zone">
       <input type="file" id="fileInput" accept="image/*" capture="environment">
@@ -468,6 +475,9 @@ function openSettings() {
 
 function closeSettings() {
   document.getElementById('settingsOverlay').classList.remove('open');
+  if (localStorage.getItem('sbd_anthropic_key')) {
+    document.getElementById('setupBanner').style.display = 'none';
+  }
 }
 
 function saveSettings() {
@@ -569,7 +579,10 @@ async function handleFile(rawFile) {
   } catch (err) {
     showScreen('drop');
 setTimeout(() => {
-  if (!localStorage.getItem('sbd_anthropic_key')) openSettings();
+  if (!localStorage.getItem('sbd_anthropic_key')) {
+    document.getElementById('setupBanner').style.display = 'block';
+    openSettings();
+  }
 }, 100);
     showError('❌ ' + err.message);
   }
