@@ -657,13 +657,13 @@ RULES:
 
 // OAuth 1.0a signature helper — works entirely in-browser
 async function oauthSign(method, url, params, consumerKey, consumerSecret, tokenKey, tokenSecret) {
-  const nonce = btoa(Array.from(crypto.getRandomValues(new Uint8Array(32)), b => String.fromCharCode(b)).join('')).replace(/[^a-zA-Z0-9]/g, '').slice(0, 32);
+  const nonce = btoa(Array.from(crypto.getRandomValues(new Uint8Array(16)), b => String.fromCharCode(b)).join('')).replace(/[^a-zA-Z0-9]/g, '').slice(0, 32);
   const timestamp = Math.floor(Date.now() / 1000).toString();
 
   const oauthParams = {
     oauth_consumer_key:     consumerKey,
     oauth_nonce:            nonce,
-    oauth_signature_method: 'HMAC-SHA256',
+    oauth_signature_method: 'HMAC-SHA1',
     oauth_timestamp:        timestamp,
     oauth_token:            tokenKey,
     oauth_version:          '1.0',
@@ -675,12 +675,12 @@ async function oauthSign(method, url, params, consumerKey, consumerSecret, token
   const baseStr = `${method.toUpperCase()}&${pct(url)}&${pct(paramStr)}`;
   const signingKey = `${pct(consumerSecret)}&${pct(tokenSecret)}`;
 
-  // HMAC-SHA256 using Web Crypto
+  // HMAC-SHA1 using Web Crypto
   const enc = new TextEncoder();
   const cryptoKey = await crypto.subtle.importKey(
-    'raw', enc.encode(signingKey), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+    'raw', enc.encode(signingKey), { name: 'HMAC', hash: 'SHA-1' }, false, ['sign']
   );
-  const sigBuf  = await crypto.subtle.sign('HMAC', cryptoKey, enc.encode(baseStr));
+  const sigBuf = await crypto.subtle.sign('HMAC', cryptoKey, enc.encode(baseStr));
   const sig = btoa(String.fromCharCode(...new Uint8Array(sigBuf)));
 
   oauthParams.oauth_signature = sig;
@@ -726,7 +726,7 @@ async function uploadMediaToTwitter(base64Data, mimeType) {
   const appendOauthParams = {
     oauth_consumer_key:     ck,
     oauth_nonce:            btoa(Array.from(crypto.getRandomValues(new Uint8Array(16)), b => String.fromCharCode(b)).join('')).replace(/[^a-z0-9]/gi,'').slice(0,32),
-    oauth_signature_method: 'HMAC-SHA256',
+    oauth_signature_method: 'HMAC-SHA1',
     oauth_timestamp:        Math.floor(Date.now()/1000).toString(),
     oauth_token:            at,
     oauth_version:          '1.0'
@@ -739,7 +739,7 @@ async function uploadMediaToTwitter(base64Data, mimeType) {
   const appendBase = `POST&${pct(appendUrl)}&${pct(appendParamStr)}`;
   const appendSignKey = `${pct(cs)}&${pct(as)}`;
   const enc = new TextEncoder();
-  const appendCryptoKey = await crypto.subtle.importKey('raw', enc.encode(appendSignKey), { name:'HMAC',hash:'SHA-256' }, false, ['sign']);
+  const appendCryptoKey = await crypto.subtle.importKey('raw', enc.encode(appendSignKey), { name:'HMAC',hash:'SHA-1' }, false, ['sign']);
   const appendSigBuf = await crypto.subtle.sign('HMAC', appendCryptoKey, enc.encode(appendBase));
   appendOauthParams.oauth_signature = btoa(String.fromCharCode(...new Uint8Array(appendSigBuf)));
 
