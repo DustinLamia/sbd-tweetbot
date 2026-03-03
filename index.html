@@ -333,13 +333,7 @@
     <div id="setupWarning" class="setup-warning">
       ⚠️ Keys are missing. Add them below to enable tweeting.
     </div>
-    <div class="settings-section">
-      <div class="settings-section-title">Gemini AI (Image Reading)</div>
-      <div class="field">
-        <label>GEMINI API KEY</label>
-        <input type="password" id="set_geminiKey" placeholder="AIzaSy...">
-      </div>
-    </div>
+
     <div class="settings-section">
       <div class="settings-section-title">Twitter / X API</div>
       <div class="field"><label>API KEY</label><input type="password" id="set_apiKey"></div>
@@ -432,7 +426,6 @@ let currentMime = null;
 // SETTINGS — stored in localStorage
 // ══════════════════════════════════════════════════════════════
 const KEYS = {
-  gemini:       'sbd_gemini_key',
   apiKey:       'sbd_tw_api_key',
   apiSecret:    'sbd_tw_api_secret',
   accessToken:  'sbd_tw_access_token',
@@ -452,12 +445,10 @@ function getKey(k)    { return localStorage.getItem(KEYS[k]) || ''; }
 function setKey(k, v) { localStorage.setItem(KEYS[k], v); }
 
 function hasAllKeys() {
-  return getKey('gemini') && getKey('apiKey') && getKey('apiSecret')
-      && getKey('accessToken') && getKey('accessSecret');
+  return getKey('apiKey') && getKey('apiSecret') && getKey('accessToken') && getKey('accessSecret');
 }
 
 function openSettings() {
-  document.getElementById('set_geminiKey').value    = getKey('gemini');
   document.getElementById('set_apiKey').value       = getKey('apiKey');
   document.getElementById('set_apiSecret').value    = getKey('apiSecret');
   document.getElementById('set_accessToken').value  = getKey('accessToken');
@@ -471,7 +462,6 @@ function closeSettings() {
 }
 
 function saveSettings() {
-  setKey('gemini',       document.getElementById('set_geminiKey').value.trim());
   setKey('apiKey',       document.getElementById('set_apiKey').value.trim());
   setKey('apiSecret',    document.getElementById('set_apiSecret').value.trim());
   setKey('accessToken',  document.getElementById('set_accessToken').value.trim());
@@ -560,7 +550,7 @@ async function handleFile(rawFile) {
     // Extract base64 from data URL
     currentBase64 = currentDataUrl.split(',')[1];
 
-    setProcessingStep('Gemini is reading your screenshot…');
+    setProcessingStep('Reading your screenshot…');
     const tweet = await analyzeWithGemini(currentBase64, currentMime);
 
     document.getElementById('previewImage').src = currentDataUrl;
@@ -574,7 +564,7 @@ async function handleFile(rawFile) {
 }
 
 // ══════════════════════════════════════════════════════════════
-// GEMINI VISION
+// CLAUDE VISION
 // ══════════════════════════════════════════════════════════════
 async function analyzeWithGemini(base64, mimeType) {
   const key = localStorage.getItem('sbd_anthropic_key');
