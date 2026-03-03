@@ -446,10 +446,10 @@ const KEYS = {
 // Twitter keys pre-loaded, only Anthropic key needs manual entry
 (function() {
   if (!localStorage.getItem('sbd_tw_api_key')) {
-    localStorage.setItem('sbd_tw_api_key',        'u5y0GXfLHjZyZFXaXoa6bBNjF');
-    localStorage.setItem('sbd_tw_api_secret',     '1cNfr5y5HQi10PSrIXXGOJiOJung5Yh1daHnci4eobnI39EDqi');
-    localStorage.setItem('sbd_tw_access_token',   '1284191658242965509-rzaiix4ex92vvYvejJEt18nCyt92r5');
-    localStorage.setItem('sbd_tw_access_secret',  '6cxn609H7wwiTau9uGpANLqmA2usd965QXvoYQq99RyAK');
+    localStorage.setItem('sbd_tw_api_key',        'ljxeLozHQnOWkSakfFBpsGmTo');
+    localStorage.setItem('sbd_tw_api_secret',     'cbirIR8cxLQB6Ab0WdYNc5LdLlNnyKCr7hTyfRniRuJWsQ07cX');
+    localStorage.setItem('sbd_tw_access_token',   '1284191658242965509-raMDJXfzatnB9JcFErxn7vvd9kkN9p');
+    localStorage.setItem('sbd_tw_access_secret',  '0Hn6Thr9wWynUDYnNeRYddoNYDlm4o3z7zNQG3XFWV2Pu');
   }
 })();
 
@@ -471,9 +471,6 @@ function openSettings() {
 
 function closeSettings() {
   document.getElementById('settingsOverlay').classList.remove('open');
-  if (localStorage.getItem('sbd_anthropic_key')) {
-    document.getElementById('setupBanner').style.display = 'none';
-  }
 }
 
 function saveSettings() {
@@ -574,11 +571,7 @@ async function handleFile(rawFile) {
     showScreen('preview');
   } catch (err) {
     showScreen('drop');
-setTimeout(() => {
-  if (localStorage.getItem('sbd_anthropic_key')) {
-    document.getElementById('setupBanner').style.display = 'none';
-  }
-}, 100);
+
     showError('❌ ' + err.message);
   }
 }
