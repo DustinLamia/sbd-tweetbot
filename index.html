@@ -568,9 +568,9 @@ async function handleFile(rawFile) {
     showScreen('preview');
   } catch (err) {
     showScreen('drop');
-if (!hasAllKeys()) {
-  setTimeout(() => openSettings(), 400);
-}
+setTimeout(() => {
+  if (!localStorage.getItem('sbd_anthropic_key')) openSettings();
+}, 100);
     showError('❌ ' + err.message);
   }
 }
