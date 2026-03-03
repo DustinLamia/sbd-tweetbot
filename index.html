@@ -9,413 +9,180 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --black:   #080C10;
-    --dark:    #0F1419;
-    --card:    #151B22;
-    --border:  #1E2731;
-    --green:   #00D46A;
-    --green2:  #00B85C;
-    --blue:    #1DA1F2;
-    --white:   #F7F9FA;
-    --muted:   #6B7A8D;
-    --red:     #FF4757;
-    --amber:   #FFB800;
-    --purple:  #7C3AED;
+    --navy:  #0D1B2A;
+    --navy2: #0A2540;
+    --teal:  #00B4A6;
+    --teal2: #009E91;
+    --white: #FFFFFF;
+    --gray:  #94A3B8;
+    --lgray: #1E2D3D;
+    --red:   #EF4444;
+    --green: #10B981;
+    --font:  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
   html, body {
-    background: var(--black);
+    background: var(--navy);
     color: var(--white);
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font);
     min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ── Background texture ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 60% 40% at 10% 0%, rgba(0,212,106,0.06) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 30% at 90% 100%, rgba(29,161,242,0.05) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
   }
 
   body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 32px 16px 64px;
-    position: relative;
-    z-index: 1;
+    padding: 24px 16px 48px;
+  }
+
+  /* ── Wrapper ── */
+  .wrapper {
+    width: 100%;
+    max-width: 480px;
   }
 
   /* ── Header ── */
   .header {
-    width: 100%;
-    max-width: 520px;
-    margin-bottom: 32px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 8px;
-  }
-
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .brand-icon {
-    width: 48px;
-    height: 48px;
-    background: linear-gradient(135deg, var(--green), #00A855);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    box-shadow: 0 0 24px rgba(0,212,106,0.3);
-    flex-shrink: 0;
-  }
-
-  .brand-text {
-    text-align: left;
-  }
-
-  .brand-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    letter-spacing: 2px;
-    color: var(--white);
-    line-height: 1;
-  }
-
-  .brand-sub {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--muted);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
-
-  .live-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(255,71,87,0.12);
-    border: 1px solid rgba(255,71,87,0.3);
-    color: var(--red);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    padding: 5px 12px;
-    border-radius: 100px;
-    text-transform: uppercase;
-  }
-
-  .live-dot {
-    width: 6px; height: 6px;
-    background: var(--red);
-    border-radius: 50%;
-    animation: blink 1.4s ease-in-out infinite;
-  }
-
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
-
-  .twitch-link {
-    font-size: 13px;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color .2s;
-  }
-  .twitch-link:hover { color: var(--green); }
-  .twitch-link span { color: var(--green); font-weight: 600; }
-
-  /* ── Settings toggle ── */
-  .settings-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 8px 14px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all .2s;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .settings-toggle:hover { color: var(--white); border-color: var(--green); }
-
-  /* ── Settings panel ── */
-  .settings-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(4px);
-    z-index: 200;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 20px 16px;
-    overflow-y: auto;
-  }
-  .settings-overlay.open { display: flex; }
-
-  .settings-panel {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 28px;
-    width: 100%;
-    max-width: 520px;
-    margin-top: 20px;
-  }
-
-  .settings-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 24px;
   }
 
-  .settings-title {
+  .logo { display: flex; flex-direction: column; line-height: 1; }
+  .logo-name {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 1.5px;
-    color: var(--white);
-  }
-
-  .close-btn {
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-size: 22px;
-    cursor: pointer;
-    padding: 4px;
-    line-height: 1;
-    transition: color .2s;
-  }
-  .close-btn:hover { color: var(--white); }
-
-  .settings-section {
-    margin-bottom: 24px;
-  }
-
-  .settings-section-title {
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--teal);
     letter-spacing: 2px;
+  }
+  .logo-sub {
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--green);
-    margin-bottom: 14px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
+    margin-top: 3px;
   }
 
-  .field {
-    margin-bottom: 14px;
-  }
-
-  .field label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--muted);
-    letter-spacing: .5px;
-    margin-bottom: 6px;
-  }
-
-  .field input {
-    width: 100%;
-    background: var(--dark);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 11px 14px;
-    font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--white);
-    outline: none;
-    transition: border-color .2s;
-  }
-  .field input:focus { border-color: var(--green); }
-  .field input::placeholder { color: var(--muted); font-size: 12px; }
-
-  .field-hint {
+  .live-badge {
+    background: var(--red);
+    color: white;
     font-size: 11px;
-    color: var(--muted);
-    margin-top: 4px;
-    line-height: 1.5;
-  }
-  .field-hint a { color: var(--blue); }
-
-  .save-settings-btn {
-    width: 100%;
-    background: var(--green);
-    color: var(--black);
-    border: none;
-    border-radius: 12px;
-    padding: 14px;
-    font-size: 15px;
     font-weight: 700;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: background .2s, transform .1s;
-    letter-spacing: .3px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    animation: pulse 1.8s ease-in-out infinite;
   }
-  .save-settings-btn:hover { background: var(--green2); }
-  .save-settings-btn:active { transform: scale(.98); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
 
-  .setup-warning {
-    background: rgba(255,184,0,0.08);
-    border: 1px solid rgba(255,184,0,0.25);
-    border-radius: 10px;
-    padding: 12px 14px;
-    font-size: 13px;
-    color: var(--amber);
-    margin-bottom: 20px;
-    line-height: 1.5;
-    display: none;
-  }
-
-  /* ── Main card ── */
+  /* ── Card ── */
   .card {
-    width: 100%;
-    max-width: 520px;
-    background: var(--card);
-    border-radius: 20px;
-    padding: 28px;
-    border: 1px solid var(--border);
-    position: relative;
+    background: var(--lgray);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid rgba(0,180,166,.15);
   }
 
-  /* ── Section label ── */
+  /* ── Label ── */
   .label {
     font-size: 11px;
-    font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 2px;
+    font-weight: 600;
+    color: var(--gray);
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   /* ── Drop zone ── */
   .drop-zone {
-    border: 2px dashed rgba(0,212,106,0.25);
-    border-radius: 16px;
-    min-height: 200px;
+    border: 2px dashed rgba(0,180,166,.4);
+    border-radius: 14px;
+    min-height: 180px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
     cursor: pointer;
     transition: border-color .2s, background .2s;
-    padding: 32px;
+    padding: 24px;
     text-align: center;
     position: relative;
     overflow: hidden;
-    background: rgba(0,212,106,0.02);
   }
   .drop-zone:hover, .drop-zone.drag-over {
-    border-color: var(--green);
-    background: rgba(0,212,106,0.05);
+    border-color: var(--teal);
+    background: rgba(0,180,166,.05);
   }
   .drop-zone input[type=file] {
     position: absolute;
     inset: 0;
     opacity: 0;
     cursor: pointer;
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
   }
-  .drop-icon { font-size: 48px; line-height: 1; }
-  .drop-text { font-size: 18px; font-weight: 700; color: var(--white); }
-  .drop-sub  { font-size: 13px; color: var(--muted); }
+  .drop-icon { font-size: 40px; line-height: 1; }
+  .drop-text { font-size: 17px; font-weight: 600; color: var(--white); }
+  .drop-sub  { font-size: 13px; color: var(--gray); }
 
   /* ── Processing ── */
   .processing {
     display: none;
     flex-direction: column;
     align-items: center;
-    gap: 18px;
-    padding: 40px 0;
+    gap: 14px;
+    padding: 32px 0;
     text-align: center;
   }
-
   .spinner-ring {
-    width: 52px; height: 52px;
-    border: 3px solid rgba(0,212,106,0.15);
-    border-top-color: var(--green);
+    width: 44px; height: 44px;
+    border: 3px solid rgba(0,180,166,.2);
+    border-top-color: var(--teal);
     border-radius: 50%;
-    animation: spin .7s linear infinite;
+    animation: spin .8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  .processing-label { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: 1px; }
-  .processing-step { font-size: 16px; font-weight: 600; color: var(--white); }
+  .processing-step { font-size: 15px; font-weight: 600; color: var(--gray); }
 
   /* ── Preview ── */
   .preview { display: none; }
-
   .preview-img-wrap {
     width: 100%;
-    border-radius: 12px;
+    border-radius: 10px;
     overflow: hidden;
-    margin-bottom: 20px;
-    background: var(--dark);
-    border: 1px solid var(--border);
-    position: relative;
+    margin-bottom: 16px;
+    background: var(--navy2);
+    border: 1px solid rgba(0,180,166,.15);
   }
   .preview-img-wrap img {
     width: 100%;
-    max-height: 280px;
+    max-height: 260px;
     object-fit: contain;
     display: block;
   }
 
-  .tweet-area-wrap { position: relative; }
   textarea {
     width: 100%;
-    background: var(--dark);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 16px;
+    background: var(--navy2);
+    border: 1px solid rgba(0,180,166,.3);
+    border-radius: 10px;
+    padding: 14px;
     font-size: 15px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font);
     color: var(--white);
     resize: vertical;
-    min-height: 120px;
-    line-height: 1.6;
+    min-height: 110px;
+    line-height: 1.5;
     outline: none;
     transition: border-color .2s;
   }
-  textarea:focus { border-color: var(--green); }
+  textarea:focus { border-color: var(--teal); }
 
-  .char-bar {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 6px;
-    margin-bottom: 20px;
-  }
-  .char-count {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-  }
-  .char-count.warn { color: var(--amber); }
+  .char-bar { text-align: right; margin-top: 6px; margin-bottom: 16px; }
+  .char-count { font-size: 12px; color: var(--gray); }
+  .char-count.warn { color: #F59E0B; }
   .char-count.over { color: var(--red); }
 
   /* ── Buttons ── */
@@ -426,261 +193,223 @@
     gap: 8px;
     width: 100%;
     padding: 16px;
-    border-radius: 14px;
-    font-size: 16px;
+    border-radius: 12px;
+    font-size: 17px;
     font-weight: 700;
     border: none;
     cursor: pointer;
-    transition: opacity .15s, transform .1s, background .15s;
-    font-family: 'DM Sans', sans-serif;
-    letter-spacing: .3px;
+    transition: opacity .15s, transform .1s;
+    font-family: var(--font);
   }
   .btn:active { transform: scale(.97); }
-  .btn:disabled { opacity: .4; cursor: not-allowed; }
-
-  .btn-tweet {
-    background: linear-gradient(135deg, var(--green), #00B05A);
-    color: var(--black);
-    box-shadow: 0 4px 24px rgba(0,212,106,0.25);
-  }
-  .btn-tweet:hover:not(:disabled) { background: linear-gradient(135deg, #00E070, var(--green)); }
-
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-tweet { background: var(--teal); color: #fff; }
+  .btn-tweet:hover:not(:disabled) { background: var(--teal2); }
   .btn-ghost {
     background: transparent;
-    color: var(--muted);
-    border: 1px solid var(--border);
+    color: var(--gray);
+    border: 1px solid rgba(148,163,184,.25);
+    margin-top: 10px;
     font-size: 14px;
     padding: 12px;
-    margin-top: 10px;
-    border-radius: 10px;
   }
-  .btn-ghost:hover { color: var(--white); border-color: rgba(107,122,141,0.5); }
+  .btn-ghost:hover { color: var(--white); }
 
   /* ── Success ── */
   .success {
     display: none;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
-    padding: 24px 0;
+    gap: 12px;
+    padding: 20px 0;
     text-align: center;
   }
   .success-checkmark {
-    width: 72px; height: 72px;
-    background: rgba(0,212,106,0.1);
+    width: 64px; height: 64px;
+    background: rgba(16,185,129,.1);
     border: 2px solid var(--green);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 32px;
+    font-size: 28px;
+    color: var(--green);
     animation: popIn .4s cubic-bezier(.34,1.56,.64,1);
   }
-  @keyframes popIn {
-    from { transform: scale(0); opacity: 0; }
-    to   { transform: scale(1); opacity: 1; }
-  }
+  @keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
   .success-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
+    font-size: 26px;
     letter-spacing: 2px;
-    color: var(--green);
+    color: var(--teal);
   }
-  .success-meta { font-size: 14px; color: var(--muted); line-height: 1.5; }
+  .success-meta { font-size: 14px; color: var(--gray); }
   .success-tweet-preview {
-    background: var(--dark);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
+    background: var(--navy2);
+    border-radius: 10px;
+    padding: 14px;
     font-size: 14px;
     color: #CBD5E1;
-    line-height: 1.6;
+    line-height: 1.5;
     text-align: left;
     width: 100%;
     white-space: pre-wrap;
+    border: 1px solid rgba(0,180,166,.2);
   }
 
-  /* ── Error / Notice ── */
+  /* ── Notices ── */
   .notice {
     width: 100%;
-    max-width: 520px;
-    border-radius: 12px;
+    max-width: 480px;
+    border-radius: 10px;
     padding: 12px 16px;
     font-size: 13px;
     line-height: 1.5;
     margin-top: 12px;
     display: none;
   }
-  .notice.error {
-    background: rgba(255,71,87,0.08);
-    border: 1px solid rgba(255,71,87,0.25);
-    color: #FF8F9A;
-  }
-  .notice.info {
-    background: rgba(29,161,242,0.08);
-    border: 1px solid rgba(29,161,242,0.25);
-    color: #7EC8F5;
-  }
+  .notice.error { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3); color: #FCA5A5; }
+  .notice.info  { background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.3); color: #6EE7B7; }
 
-  /* ── Divider ── */
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 20px 0;
+  /* ── Settings overlay ── */
+  .settings-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.7);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px 16px;
+    overflow-y: auto;
   }
-
-  /* ── Key status indicators ── */
-  .key-status {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
+  .settings-overlay.open { display: flex; }
+  .settings-panel {
+    background: var(--lgray);
+    border: 1px solid rgba(0,180,166,.2);
+    border-radius: 16px;
+    padding: 24px;
+    width: 100%;
+    max-width: 480px;
+    margin-top: 20px;
   }
-  .key-badge {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 6px;
-    letter-spacing: .5px;
-  }
-  .key-badge.ok    { background: rgba(0,212,106,0.12); color: var(--green); border: 1px solid rgba(0,212,106,0.2); }
-  .key-badge.miss  { background: rgba(255,71,87,0.1);  color: var(--red);   border: 1px solid rgba(255,71,87,0.2); }
+  .settings-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .settings-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; color: var(--teal); }
+  .close-btn { background: none; border: none; color: var(--gray); font-size: 20px; cursor: pointer; }
+  .settings-section { margin-bottom: 20px; }
+  .settings-section-title { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); margin-bottom: 12px; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 11px; font-weight: 600; color: var(--gray); letter-spacing: .5px; margin-bottom: 5px; }
+  .field input { width: 100%; background: var(--navy2); border: 1px solid rgba(0,180,166,.3); border-radius: 8px; padding: 10px 12px; font-size: 13px; font-family: var(--font); color: var(--white); outline: none; }
+  .field input:focus { border-color: var(--teal); }
+  .save-settings-btn { width: 100%; background: var(--teal); color: #fff; border: none; border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 700; font-family: var(--font); cursor: pointer; }
+  .save-settings-btn:hover { background: var(--teal2); }
+  .setup-warning { background: rgba(245,158,11,.1); border: 1px solid rgba(245,158,11,.3); border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #FCD34D; margin-bottom: 16px; display: none; }
 
-  /* ── Scrollbar ── */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-  /* spinner inside button */
+  /* ── Spinner in button ── */
   .btn-spinner {
     width: 18px; height: 18px;
-    border: 2px solid rgba(0,0,0,0.3);
-    border-top-color: var(--black);
+    border: 2px solid rgba(255,255,255,.3);
+    border-top-color: #fff;
     border-radius: 50%;
     animation: spin .7s linear infinite;
     flex-shrink: 0;
   }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: var(--lgray); border-radius: 3px; }
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<div class="header">
-  <div class="brand">
-    <div class="brand-icon">🏆</div>
-    <div class="brand-text">
-      <div class="brand-name">SportsByDustin</div>
-      <div class="brand-sub">Tweet Bot</div>
-    </div>
-  </div>
-  <div class="live-pill"><div class="live-dot"></div> LIVE</div>
-  <a class="twitch-link" href="https://twitch.tv/SportsByDustin" target="_blank">
-    📺 Watch live at <span>twitch.tv/SportsByDustin</span>
-  </a>
-</div>
-
-<!-- Settings overlay -->
+<!-- Settings overlay (hidden, keys are hardcoded) -->
 <div class="settings-overlay" id="settingsOverlay">
   <div class="settings-panel">
     <div class="settings-header">
       <div class="settings-title">API CONFIGURATION</div>
       <button class="close-btn" onclick="closeSettings()">✕</button>
     </div>
-
     <div id="setupWarning" class="setup-warning">
       ⚠️ Keys are missing. Add them below to enable tweeting.
     </div>
-
     <div class="settings-section">
-      <div class="settings-section-title">🤖 Gemini AI (Image Reading)</div>
+      <div class="settings-section-title">Gemini AI (Image Reading)</div>
       <div class="field">
         <label>GEMINI API KEY</label>
         <input type="password" id="set_geminiKey" placeholder="AIzaSy...">
-        <div class="field-hint">Free at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a> → Get API key. Gemini 2.0 Flash — no cost.</div>
       </div>
     </div>
-
     <div class="settings-section">
-      <div class="settings-section-title">🐦 Twitter / X API</div>
-      <div class="field-hint" style="margin-bottom:14px; color:var(--muted); font-size:12px; line-height:1.6;">
-        Get all four keys at <a href="https://developer.twitter.com/en/portal/projects-and-apps" target="_blank" style="color:var(--blue)">developer.twitter.com</a> → Your App → Keys and Tokens.
-        You need a <strong style="color:var(--white)">Free tier</strong> dev account. Make sure your app has <strong style="color:var(--white)">Read and Write</strong> permissions and generate <em>Access Token</em> (not just Bearer).
-      </div>
-      <div class="field">
-        <label>API KEY (Consumer Key)</label>
-        <input type="password" id="set_apiKey" placeholder="Consumer Key">
-      </div>
-      <div class="field">
-        <label>API KEY SECRET (Consumer Secret)</label>
-        <input type="password" id="set_apiSecret" placeholder="Consumer Secret">
-      </div>
-      <div class="field">
-        <label>ACCESS TOKEN</label>
-        <input type="password" id="set_accessToken" placeholder="Access Token">
-      </div>
-      <div class="field">
-        <label>ACCESS TOKEN SECRET</label>
-        <input type="password" id="set_accessSecret" placeholder="Access Token Secret">
-      </div>
+      <div class="settings-section-title">Twitter / X API</div>
+      <div class="field"><label>API KEY</label><input type="password" id="set_apiKey"></div>
+      <div class="field"><label>API KEY SECRET</label><input type="password" id="set_apiSecret"></div>
+      <div class="field"><label>ACCESS TOKEN</label><input type="password" id="set_accessToken"></div>
+      <div class="field"><label>ACCESS TOKEN SECRET</label><input type="password" id="set_accessSecret"></div>
     </div>
-
-    <button class="save-settings-btn" onclick="saveSettings()">💾 Save API Keys Locally</button>
-    <div class="field-hint" style="margin-top:10px; text-align:center;">Keys are stored only in your browser (localStorage). Never sent anywhere except Twitter & Google APIs.</div>
+    <button class="save-settings-btn" onclick="saveSettings()">Save API Keys</button>
   </div>
 </div>
 
-<!-- Main card -->
-<div class="card">
+<!-- Main wrapper -->
+<div class="wrapper">
 
-  <!-- Drop zone -->
-  <div id="dropZone" class="drop-zone">
-    <input type="file" id="fileInput" accept="image/*" capture="environment">
-    <div class="drop-icon">📸</div>
-    <div class="drop-text">Drop your screenshot here</div>
-    <div class="drop-sub">Bet slip, game result, highlight — tap to upload from camera or gallery</div>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <span class="logo-name">SPORTSBYDUSTIN</span>
+      <span class="logo-sub">Tweet Bot</span>
+    </div>
+    <div class="live-badge">● LIVE</div>
   </div>
 
-  <!-- Processing -->
-  <div id="processing" class="processing">
-    <div class="spinner-ring"></div>
-    <div class="processing-label">WORKING</div>
-    <div class="processing-step" id="processingStep">Reading image with Gemini…</div>
-  </div>
+  <!-- Card -->
+  <div class="card">
 
-  <!-- Preview -->
-  <div id="preview" class="preview">
-    <div class="preview-img-wrap">
-      <img id="previewImage" src="" alt="Screenshot preview">
+    <!-- Drop zone -->
+    <div id="dropZone" class="drop-zone">
+      <input type="file" id="fileInput" accept="image/*" capture="environment">
+      <div class="drop-icon">📸</div>
+      <div class="drop-text">Drop your screenshot here</div>
+      <div class="drop-sub">or tap to select from camera / gallery</div>
     </div>
 
-    <div class="label">Generated Tweet</div>
-    <div class="tweet-area-wrap">
-      <textarea id="tweetText" maxlength="280" placeholder="Your tweet will appear here…"></textarea>
-    </div>
-    <div class="char-bar">
-      <span class="char-count" id="charCount">0 / 280</span>
+    <!-- Processing -->
+    <div id="processing" class="processing">
+      <div class="spinner-ring"></div>
+      <div class="processing-step" id="processingStep">Reading image…</div>
     </div>
 
-    <button class="btn btn-tweet" id="postBtn" onclick="postTweet()">
-      <span>🐦</span> Post to @SportsByDustin Now
-    </button>
-    <button class="btn btn-ghost" onclick="resetFlow()">↩ Start over</button>
-  </div>
+    <!-- Preview -->
+    <div id="preview" class="preview">
+      <div class="preview-img-wrap">
+        <img id="previewImage" src="" alt="Screenshot preview">
+      </div>
+      <div class="label">Tweet</div>
+      <textarea id="tweetText" maxlength="280" placeholder="Generated tweet will appear here…"></textarea>
+      <div class="char-bar">
+        <span class="char-count" id="charCount">0 / 280</span>
+      </div>
+      <button class="btn btn-tweet" id="postBtn" onclick="postTweet()">
+        🐦 Post to Twitter/X Now
+      </button>
+      <button class="btn btn-ghost" onclick="resetFlow()">↩ Start over</button>
+    </div>
 
-  <!-- Success -->
-  <div id="success" class="success">
-    <div class="success-checkmark">✓</div>
-    <div class="success-title">TWEET POSTED!</div>
-    <div class="success-meta">Live on @SportsByDustin's Twitter/X feed</div>
-    <div class="success-tweet-preview" id="postedTweetText"></div>
-    <button class="btn btn-tweet" onclick="resetFlow()" style="margin-top:8px">
-      <span>📸</span> Post Another
-    </button>
-  </div>
+    <!-- Success -->
+    <div id="success" class="success">
+      <div class="success-checkmark">✓</div>
+      <div class="success-title">TWEET POSTED!</div>
+      <div class="success-meta">Live on @SportsByDustin</div>
+      <div class="success-tweet-preview" id="postedTweetText"></div>
+      <button class="btn btn-tweet" onclick="resetFlow()" style="margin-top:8px">📸 Post Another</button>
+    </div>
 
-</div>
+  </div><!-- /card -->
 
-<!-- Error notice -->
+</div><!-- /wrapper -->
+
+<!-- Notices -->
 <div class="notice error" id="errorBar"></div>
 <div class="notice info" id="infoBar"></div>
 
@@ -688,7 +417,7 @@
 // ══════════════════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════════════════
-const TWITCH_URL = 'twitch.tv/SportsByDustin';
+const TWITCH_URL = 'Twitch.tv/SportsByDustin';
 const TWITTER_HANDLE = 'SportsByDustin';
 
 // ══════════════════════════════════════════════════════════════
@@ -712,7 +441,7 @@ const KEYS = {
 
 // All keys hardcoded — no setup required
 (function() {
-  localStorage.setItem('sbd_gemini_key',        'AIzaSyDOlPQQ54_L7EPNo8tFuGRl9E31830nbyY');
+  localStorage.setItem('sbd_gemini_key',        'AIzaSyA8rUf_7mdYcombKtbvamTDchDoTVafQFU');
   localStorage.setItem('sbd_tw_api_key',        'u5y0GXfLHjZyZFXaXoa6bBNjF');
   localStorage.setItem('sbd_tw_api_secret',     '1cNfr5y5HQi10PSrIXXGOJiOJung5Yh1daHnci4eobnI39EDqi');
   localStorage.setItem('sbd_tw_access_token',   '1284191658242965509-rzaiix4ex92vvYvejJEt18nCyt92r5');
@@ -1166,5 +895,6 @@ showScreen('drop');
 
 
 </script>
+
 </body>
 </html>
