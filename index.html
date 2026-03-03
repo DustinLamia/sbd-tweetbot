@@ -441,7 +441,7 @@ const KEYS = {
 
 // All keys hardcoded — no setup required
 (function() {
-  localStorage.setItem('sbd_gemini_key',        'AIzaSyDOlPQQ54_L7EPNo8tFuGRl9E31830nbyY');
+  localStorage.setItem('sbd_anthropic_key',     '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');
   localStorage.setItem('sbd_tw_api_key',        'u5y0GXfLHjZyZFXaXoa6bBNjF');
   localStorage.setItem('sbd_tw_api_secret',     '1cNfr5y5HQi10PSrIXXGOJiOJung5Yh1daHnci4eobnI39EDqi');
   localStorage.setItem('sbd_tw_access_token',   '1284191658242965509-rzaiix4ex92vvYvejJEt18nCyt92r5');
@@ -577,8 +577,8 @@ async function handleFile(rawFile) {
 // GEMINI VISION
 // ══════════════════════════════════════════════════════════════
 async function analyzeWithGemini(base64, mimeType) {
-  const key = getKey('gemini');
-  if (!key) throw new Error('Gemini API key not configured.');
+  const key = localStorage.getItem('sbd_anthropic_key');
+  if (!key) throw new Error('Anthropic API key not configured.');
 
   const prompt = `You are the social media manager for @SportsByDustin, a sports content creator on Twitch.
 
@@ -606,46 +606,47 @@ Always end with a blank line then:
 LIVE NOW: ${TWITCH_URL}
 
 RULES:
-- Under 240 characters total (leave room for the image attachment)
+- Under 240 characters total
 - No hashtags
 - No quotes around the output
 - No markdown
 - Output ONLY the tweet text, nothing else`;
 
-  const resp = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{
-          parts: [
-            { inline_data: { mime_type: mimeType, data: base64 } },
-            { text: prompt }
-          ]
-        }],
-        generationConfig: { maxOutputTokens: 120, temperature: 0.7 }
-      })
-    }
-  );
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': key,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 120,
+      messages: [{
+        role: 'user',
+        content: [
+          { type: 'image', source: { type: 'base64', media_type: mimeType, data: base64 } },
+          { type: 'text', text: prompt },
+        ],
+      }],
+    }),
+  });
 
   let respText;
-  try { respText = await resp.text(); } catch(e) { throw new Error('Could not read Gemini response: ' + e.message); }
+  try { respText = await resp.text(); } catch(e) { throw new Error('Could not read API response: ' + e.message); }
 
   if (!resp.ok) {
     let detail = respText;
     try { const j = JSON.parse(respText); detail = j?.error?.message || respText; } catch {}
-    throw new Error(`Gemini ${resp.status}: ${detail}`);
+    throw new Error('Claude API ' + resp.status + ': ' + detail);
   }
 
   let json;
-  try { json = JSON.parse(respText); } catch(e) { throw new Error('Gemini response not valid JSON: ' + respText.slice(0,200)); }
+  try { json = JSON.parse(respText); } catch(e) { throw new Error('Invalid JSON response: ' + respText.slice(0,200)); }
 
-  const text = json?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) {
-    const reason = json?.candidates?.[0]?.finishReason || JSON.stringify(json).slice(0,300);
-    throw new Error('Gemini returned no text. Reason: ' + reason);
-  }
+  const text = json?.content?.[0]?.text;
+  if (!text) throw new Error('No text returned from Claude.');
   return text.trim();
 }
 
