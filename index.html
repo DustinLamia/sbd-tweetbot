@@ -443,13 +443,11 @@ const KEYS = {
   accessSecret: 'sbd_tw_access_secret',
 };
 
-// Twitter keys — always overwrite to ensure latest keys are used
-(function() {
-  localStorage.setItem('sbd_tw_api_key',        'ljxeLozHQnOWkSakfFBpsGmTo');
-  localStorage.setItem('sbd_tw_api_secret',     'cbirIR8cxLQB6Ab0WdYNc5LdLlNnyKCr7hTyfRniRuJWsQ07cX');
-  localStorage.setItem('sbd_tw_access_token',   '1284191658242965509-raMDJXfzatnB9JcFErxn7vvd9kkN9p');
-  localStorage.setItem('sbd_tw_access_secret',  '0Hn6Thr9wWynUDYnNeRYddoNYDlm4o3z7zNQG3XFWV2Pu');
-})();
+// Twitter keys hardcoded
+const TW_API_KEY       = 'ljxeLozHQnOWkSakfFBpsGmTo';
+const TW_API_SECRET    = 'cbirIR8cxLQB6Ab0WdYNc5LdLlNnyKCr7hTyfRniRuJWsQ07cX';
+const TW_ACCESS_TOKEN  = '1284191658242965509-raMDJXfzatnB9JcFErxn7vvd9kkN9p';
+const TW_ACCESS_SECRET = '0Hn6Thr9wWynUDYnNeRYddoNYDlm4o3z7zNQG3XFWV2Pu';
 
 function getKey(k)    { return localStorage.getItem(KEYS[k]) || ''; }
 function setKey(k, v) { localStorage.setItem(KEYS[k], v); }
@@ -698,10 +696,10 @@ function pct(s) { return encodeURIComponent(String(s)); }
 
 // Upload media to Twitter v1.1 (base64 INIT+APPEND+FINALIZE)
 async function uploadMediaToTwitter(base64Data, mimeType) {
-  const ck = getKey('apiKey');
-  const cs = getKey('apiSecret');
-  const at = getKey('accessToken');
-  const as = getKey('accessSecret');
+  const ck = TW_API_KEY;
+  const cs = TW_API_SECRET;
+  const at = TW_ACCESS_TOKEN;
+  const as = TW_ACCESS_SECRET;
 
   const mediaBytes = atob(base64Data);
   const totalBytes = mediaBytes.length;
@@ -782,10 +780,10 @@ async function uploadMediaToTwitter(base64Data, mimeType) {
 
 // Post tweet v2
 async function postTweetToTwitter(text, mediaId) {
-  const ck = getKey('apiKey');
-  const cs = getKey('apiSecret');
-  const at = getKey('accessToken');
-  const as = getKey('accessSecret');
+  const ck = TW_API_KEY;
+  const cs = TW_API_SECRET;
+  const at = TW_ACCESS_TOKEN;
+  const as = TW_ACCESS_SECRET;
 
   const tweetUrl = 'https://api.twitter.com/2/tweets';
   const auth = await oauthSign('POST', tweetUrl, {}, ck, cs, at, as);
