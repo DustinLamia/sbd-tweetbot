@@ -443,6 +443,9 @@ const KEYS = {
   accessSecret: 'sbd_tw_access_secret',
 };
 
+// ── Worker URL — paste your Cloudflare Worker URL here ──
+const WORKER_URL = 'https://plain-firefly-3bd7.sportsbydustin.workers.dev';
+
 // Twitter keys hardcoded
 const TW_API_KEY       = 'ljxeLozHQnOWkSakfFBpsGmTo';
 const TW_API_SECRET    = 'cbirIR8cxLQB6Ab0WdYNc5LdLlNnyKCr7hTyfRniRuJWsQ07cX';
@@ -814,28 +817,40 @@ async function postTweet() {
 
   const btn = document.getElementById('postBtn');
   btn.disabled = true;
-  btn.innerHTML = '<div class="btn-spinner"></div> Posting to Twitter…';
+  btn.innerHTML = '<div class="btn-spinner"></div> Posting…';
   clearNotices();
 
   try {
-    setProcessingStep('Uploading image to Twitter…');
-    // Show subtle loading in preview, not full screen
-    let mediaId = null;
+    // Send image + text to Cloudflare Worker which handles Twitter API
+    const formData = new FormData();
+    formData.append('text', text);
     if (currentBase64) {
-      mediaId = await uploadMediaToTwitter(currentBase64, currentMime);
+      formData.append('image', currentBase64);
+      formData.append('mimeType', currentMime);
     }
 
-    setProcessingStep('Sending tweet…');
-    await postTweetToTwitter(text, mediaId);
+    const endpoint = currentBase64
+      ? WORKER_URL + '/tweet-with-image'
+      : WORKER_URL + '/tweet';
+
+    const resp = await fetch(endpoint, {
+      method: 'POST',
+      body: currentBase64 ? formData : JSON.stringify({ text }),
+      headers: currentBase64 ? {} : { 'Content-Type': 'application/json' }
+    });
+
+    const json = await resp.json();
+    if (!resp.ok || json.error) throw new Error(json.error || 'Post failed');
 
     document.getElementById('postedTweetText').textContent = text;
     showScreen('success');
   } catch (err) {
     showError('❌ ' + err.message);
     btn.disabled = false;
-    btn.innerHTML = '<span>🐦</span> Post to @SportsByDustin Now';
+    btn.innerHTML = '🐦 Post to @SportsByDustin Now';
   }
 }
+
 
 // ══════════════════════════════════════════════════════════════
 // UI HELPERS
