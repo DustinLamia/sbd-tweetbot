@@ -335,6 +335,14 @@
     </div>
 
     <div class="settings-section">
+      <div class="settings-section-title">Claude AI (Image Reading)</div>
+      <div class="field">
+        <label>ANTHROPIC API KEY</label>
+        <input type="password" id="set_anthropicKey" placeholder="sk-ant-api03-...">
+        <div class="field-hint" style="font-size:11px;color:#94A3B8;margin-top:4px;">Get at console.anthropic.com → API Keys</div>
+      </div>
+    </div>
+    <div class="settings-section">
       <div class="settings-section-title">Twitter / X API</div>
       <div class="field"><label>API KEY</label><input type="password" id="set_apiKey"></div>
       <div class="field"><label>API KEY SECRET</label><input type="password" id="set_apiSecret"></div>
@@ -432,20 +440,13 @@ const KEYS = {
   accessSecret: 'sbd_tw_access_secret',
 };
 
-// All keys hardcoded — no setup required
-(function() {
-  localStorage.setItem('sbd_anthropic_key',     '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');
-  localStorage.setItem('sbd_tw_api_key',        'u5y0GXfLHjZyZFXaXoa6bBNjF');
-  localStorage.setItem('sbd_tw_api_secret',     '1cNfr5y5HQi10PSrIXXGOJiOJung5Yh1daHnci4eobnI39EDqi');
-  localStorage.setItem('sbd_tw_access_token',   '1284191658242965509-rzaiix4ex92vvYvejJEt18nCyt92r5');
-  localStorage.setItem('sbd_tw_access_secret',  '6cxn609H7wwiTau9uGpANLqmA2usd965QXvoYQq99RyAK');
-})();
+// Keys stored in localStorage only — enter them via the setup screen
 
 function getKey(k)    { return localStorage.getItem(KEYS[k]) || ''; }
 function setKey(k, v) { localStorage.setItem(KEYS[k], v); }
 
 function hasAllKeys() {
-  return getKey('apiKey') && getKey('apiSecret') && getKey('accessToken') && getKey('accessSecret');
+  return localStorage.getItem('sbd_anthropic_key') && getKey('apiKey') && getKey('apiSecret') && getKey('accessToken') && getKey('accessSecret');
 }
 
 function openSettings() {
@@ -559,6 +560,9 @@ async function handleFile(rawFile) {
     showScreen('preview');
   } catch (err) {
     showScreen('drop');
+if (!hasAllKeys()) {
+  setTimeout(() => openSettings(), 400);
+}
     showError('❌ ' + err.message);
   }
 }
