@@ -564,9 +564,6 @@
 </head>
 <body>
 
-<!-- Settings toggle -->
-<button class="settings-toggle" onclick="openSettings()">⚙ API Keys</button>
-
 <!-- Header -->
 <div class="header">
   <div class="brand">
@@ -634,9 +631,6 @@
 
 <!-- Main card -->
 <div class="card">
-
-  <!-- Key status -->
-  <div class="key-status" id="keyStatus"></div>
 
   <!-- Drop zone -->
   <div id="dropZone" class="drop-zone">
@@ -745,7 +739,6 @@ function openSettings() {
 
 function closeSettings() {
   document.getElementById('settingsOverlay').classList.remove('open');
-  renderKeyStatus();
 }
 
 function saveSettings() {
@@ -758,17 +751,7 @@ function saveSettings() {
   showInfo('✅ Keys saved. You\'re all set!');
 }
 
-function renderKeyStatus() {
-  const el = document.getElementById('keyStatus');
-  const badges = [
-    { label: 'Gemini', ok: !!getKey('gemini') },
-    { label: 'TW API Key', ok: !!getKey('apiKey') },
-    { label: 'Access Token', ok: !!getKey('accessToken') },
-  ];
-  el.innerHTML = badges.map(b =>
-    `<span class="key-badge ${b.ok ? 'ok' : 'miss'}">${b.ok ? '✓' : '✗'} ${b.label}</span>`
-  ).join('');
-}
+
 
 // ══════════════════════════════════════════════════════════════
 // DRAG & DROP
@@ -833,8 +816,7 @@ function readDataUrl(file) {
 
 async function handleFile(rawFile) {
   if (!hasAllKeys()) {
-    showError('⚙️ Set up your API keys first — click "API Keys" in the top right.');
-    openSettings();
+    showError('⚙️ API keys not configured.');
     return;
   }
   clearNotices();
@@ -902,7 +884,7 @@ RULES:
 - Output ONLY the tweet text, nothing else`;
 
   const resp = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1180,13 +1162,9 @@ document.getElementById('settingsOverlay').addEventListener('click', function(e)
 // ══════════════════════════════════════════════════════════════
 // BOOT
 // ══════════════════════════════════════════════════════════════
-renderKeyStatus();
 showScreen('drop');
 
-// Prompt setup on first load if no keys
-if (!hasAllKeys()) {
-  setTimeout(() => showError('👆 Click "API Keys" in the top right to get started.'), 500);
-}
+
 </script>
 </body>
 </html>
