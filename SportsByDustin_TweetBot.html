@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SportsByDustin Tweet Bot</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:   #080C10;
+    --dark:    #0F1419;
+    --card:    #151B22;
+    --border:  #1E2731;
+    --green:   #00D46A;
+    --green2:  #00B85C;
+    --blue:    #1DA1F2;
+    --white:   #F7F9FA;
+    --muted:   #6B7A8D;
+    --red:     #FF4757;
+    --amber:   #FFB800;
+    --purple:  #7C3AED;
+  }
+
+  html, body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Background texture ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 10% 0%, rgba(0,212,106,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 30% at 90% 100%, rgba(29,161,242,0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 64px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Header ── */
+  .header {
+    width: 100%;
+    max-width: 520px;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .brand-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--green), #00A855);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 0 24px rgba(0,212,106,0.3);
+    flex-shrink: 0;
+  }
+
+  .brand-text {
+    text-align: left;
+  }
+
+  .brand-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 2px;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .brand-sub {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .live-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,71,87,0.12);
+    border: 1px solid rgba(255,71,87,0.3);
+    color: var(--red);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    text-transform: uppercase;
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: blink 1.4s ease-in-out infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+  .twitch-link {
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .twitch-link:hover { color: var(--green); }
+  .twitch-link span { color: var(--green); font-weight: 600; }
+
+  /* ── Settings toggle ── */
+  .settings-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .2s;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .settings-toggle:hover { color: var(--white); border-color: var(--green); }
+
+  /* ── Settings panel ── */
+  .settings-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px 16px;
+    overflow-y: auto;
+  }
+  .settings-overlay.open { display: flex; }
+
+  .settings-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    width: 100%;
+    max-width: 520px;
+    margin-top: 20px;
+  }
+
+  .settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .settings-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1.5px;
+    color: var(--white);
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 22px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    transition: color .2s;
+  }
+  .close-btn:hover { color: var(--white); }
+
+  .settings-section {
+    margin-bottom: 24px;
+  }
+
+  .settings-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .field {
+    margin-bottom: 14px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: .5px;
+    margin-bottom: 6px;
+  }
+
+  .field input {
+    width: 100%;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--white);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .field input:focus { border-color: var(--green); }
+  .field input::placeholder { color: var(--muted); font-size: 12px; }
+
+  .field-hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+  .field-hint a { color: var(--blue); }
+
+  .save-settings-btn {
+    width: 100%;
+    background: var(--green);
+    color: var(--black);
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background .2s, transform .1s;
+    letter-spacing: .3px;
+  }
+  .save-settings-btn:hover { background: var(--green2); }
+  .save-settings-btn:active { transform: scale(.98); }
+
+  .setup-warning {
+    background: rgba(255,184,0,0.08);
+    border: 1px solid rgba(255,184,0,0.25);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--amber);
+    margin-bottom: 20px;
+    line-height: 1.5;
+    display: none;
+  }
+
+  /* ── Main card ── */
+  .card {
+    width: 100%;
+    max-width: 520px;
+    background: var(--card);
+    border-radius: 20px;
+    padding: 28px;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+
+  /* ── Section label ── */
+  .label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  /* ── Drop zone ── */
+  .drop-zone {
+    border: 2px dashed rgba(0,212,106,0.25);
+    border-radius: 16px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    padding: 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background: rgba(0,212,106,0.02);
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--green);
+    background: rgba(0,212,106,0.05);
+  }
+  .drop-zone input[type=file] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+  .drop-icon { font-size: 48px; line-height: 1; }
+  .drop-text { font-size: 18px; font-weight: 700; color: var(--white); }
+  .drop-sub  { font-size: 13px; color: var(--muted); }
+
+  /* ── Processing ── */
+  .processing {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding: 40px 0;
+    text-align: center;
+  }
+
+  .spinner-ring {
+    width: 52px; height: 52px;
+    border: 3px solid rgba(0,212,106,0.15);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .processing-label { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: 1px; }
+  .processing-step { font-size: 16px; font-weight: 600; color: var(--white); }
+
+  /* ── Preview ── */
+  .preview { display: none; }
+
+  .preview-img-wrap {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .preview-img-wrap img {
+    width: 100%;
+    max-height: 280px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .tweet-area-wrap { position: relative; }
+  textarea {
+    width: 100%;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--white);
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.6;
+    outline: none;
+    transition: border-color .2s;
+  }
+  textarea:focus { border-color: var(--green); }
+
+  .char-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 6px;
+    margin-bottom: 20px;
+  }
+  .char-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .char-count.warn { color: var(--amber); }
+  .char-count.over { color: var(--red); }
+
+  /* ── Buttons ── */
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: opacity .15s, transform .1s, background .15s;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: .3px;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  .btn-tweet {
+    background: linear-gradient(135deg, var(--green), #00B05A);
+    color: var(--black);
+    box-shadow: 0 4px 24px rgba(0,212,106,0.25);
+  }
+  .btn-tweet:hover:not(:disabled) { background: linear-gradient(135deg, #00E070, var(--green)); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    font-size: 14px;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 10px;
+  }
+  .btn-ghost:hover { color: var(--white); border-color: rgba(107,122,141,0.5); }
+
+  /* ── Success ── */
+  .success {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 24px 0;
+    text-align: center;
+  }
+  .success-checkmark {
+    width: 72px; height: 72px;
+    background: rgba(0,212,106,0.1);
+    border: 2px solid var(--green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    animation: popIn .4s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes popIn {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  .success-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 2px;
+    color: var(--green);
+  }
+  .success-meta { font-size: 14px; color: var(--muted); line-height: 1.5; }
+  .success-tweet-preview {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 14px;
+    color: #CBD5E1;
+    line-height: 1.6;
+    text-align: left;
+    width: 100%;
+    white-space: pre-wrap;
+  }
+
+  /* ── Error / Notice ── */
+  .notice {
+    width: 100%;
+    max-width: 520px;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-top: 12px;
+    display: none;
+  }
+  .notice.error {
+    background: rgba(255,71,87,0.08);
+    border: 1px solid rgba(255,71,87,0.25);
+    color: #FF8F9A;
+  }
+  .notice.info {
+    background: rgba(29,161,242,0.08);
+    border: 1px solid rgba(29,161,242,0.25);
+    color: #7EC8F5;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+
+  /* ── Key status indicators ── */
+  .key-status {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .key-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: .5px;
+  }
+  .key-badge.ok    { background: rgba(0,212,106,0.12); color: var(--green); border: 1px solid rgba(0,212,106,0.2); }
+  .key-badge.miss  { background: rgba(255,71,87,0.1);  color: var(--red);   border: 1px solid rgba(255,71,87,0.2); }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* spinner inside button */
+  .btn-spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(0,0,0,0.3);
+    border-top-color: var(--black);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- Settings toggle -->
+<button class="settings-toggle" onclick="openSettings()">⚙ API Keys</button>
+
+<!-- Header -->
+<div class="header">
+  <div class="brand">
+    <div class="brand-icon">🏆</div>
+    <div class="brand-text">
+      <div class="brand-name">SportsByDustin</div>
+      <div class="brand-sub">Tweet Bot</div>
+    </div>
+  </div>
+  <div class="live-pill"><div class="live-dot"></div> LIVE</div>
+  <a class="twitch-link" href="https://twitch.tv/SportsByDustin" target="_blank">
+    📺 Watch live at <span>twitch.tv/SportsByDustin</span>
+  </a>
+</div>
+
+<!-- Settings overlay -->
+<div class="settings-overlay" id="settingsOverlay">
+  <div class="settings-panel">
+    <div class="settings-header">
+      <div class="settings-title">API CONFIGURATION</div>
+      <button class="close-btn" onclick="closeSettings()">✕</button>
+    </div>
+
+    <div id="setupWarning" class="setup-warning">
+      ⚠️ Keys are missing. Add them below to enable tweeting.
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">🤖 Gemini AI (Image Reading)</div>
+      <div class="field">
+        <label>GEMINI API KEY</label>
+        <input type="password" id="set_geminiKey" placeholder="AIzaSy...">
+        <div class="field-hint">Free at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a> → Get API key. Gemini 2.0 Flash — no cost.</div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">🐦 Twitter / X API</div>
+      <div class="field-hint" style="margin-bottom:14px; color:var(--muted); font-size:12px; line-height:1.6;">
+        Get all four keys at <a href="https://developer.twitter.com/en/portal/projects-and-apps" target="_blank" style="color:var(--blue)">developer.twitter.com</a> → Your App → Keys and Tokens.
+        You need a <strong style="color:var(--white)">Free tier</strong> dev account. Make sure your app has <strong style="color:var(--white)">Read and Write</strong> permissions and generate <em>Access Token</em> (not just Bearer).
+      </div>
+      <div class="field">
+        <label>API KEY (Consumer Key)</label>
+        <input type="password" id="set_apiKey" placeholder="Consumer Key">
+      </div>
+      <div class="field">
+        <label>API KEY SECRET (Consumer Secret)</label>
+        <input type="password" id="set_apiSecret" placeholder="Consumer Secret">
+      </div>
+      <div class="field">
+        <label>ACCESS TOKEN</label>
+        <input type="password" id="set_accessToken" placeholder="Access Token">
+      </div>
+      <div class="field">
+        <label>ACCESS TOKEN SECRET</label>
+        <input type="password" id="set_accessSecret" placeholder="Access Token Secret">
+      </div>
+    </div>
+
+    <button class="save-settings-btn" onclick="saveSettings()">💾 Save API Keys Locally</button>
+    <div class="field-hint" style="margin-top:10px; text-align:center;">Keys are stored only in your browser (localStorage). Never sent anywhere except Twitter & Google APIs.</div>
+  </div>
+</div>
+
+<!-- Main card -->
+<div class="card">
+
+  <!-- Key status -->
+  <div class="key-status" id="keyStatus"></div>
+
+  <!-- Drop zone -->
+  <div id="dropZone" class="drop-zone">
+    <input type="file" id="fileInput" accept="image/*" capture="environment">
+    <div class="drop-icon">📸</div>
+    <div class="drop-text">Drop your screenshot here</div>
+    <div class="drop-sub">Bet slip, game result, highlight — tap to upload from camera or gallery</div>
+  </div>
+
+  <!-- Processing -->
+  <div id="processing" class="processing">
+    <div class="spinner-ring"></div>
+    <div class="processing-label">WORKING</div>
+    <div class="processing-step" id="processingStep">Reading image with Gemini…</div>
+  </div>
+
+  <!-- Preview -->
+  <div id="preview" class="preview">
+    <div class="preview-img-wrap">
+      <img id="previewImage" src="" alt="Screenshot preview">
+    </div>
+
+    <div class="label">Generated Tweet</div>
+    <div class="tweet-area-wrap">
+      <textarea id="tweetText" maxlength="280" placeholder="Your tweet will appear here…"></textarea>
+    </div>
+    <div class="char-bar">
+      <span class="char-count" id="charCount">0 / 280</span>
+    </div>
+
+    <button class="btn btn-tweet" id="postBtn" onclick="postTweet()">
+      <span>🐦</span> Post to @SportsByDustin Now
+    </button>
+    <button class="btn btn-ghost" onclick="resetFlow()">↩ Start over</button>
+  </div>
+
+  <!-- Success -->
+  <div id="success" class="success">
+    <div class="success-checkmark">✓</div>
+    <div class="success-title">TWEET POSTED!</div>
+    <div class="success-meta">Live on @SportsByDustin's Twitter/X feed</div>
+    <div class="success-tweet-preview" id="postedTweetText"></div>
+    <button class="btn btn-tweet" onclick="resetFlow()" style="margin-top:8px">
+      <span>📸</span> Post Another
+    </button>
+  </div>
+
+</div>
+
+<!-- Error notice -->
+<div class="notice error" id="errorBar"></div>
+<div class="notice info" id="infoBar"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════════
+const TWITCH_URL = 'twitch.tv/SportsByDustin';
+const TWITTER_HANDLE = 'SportsByDustin';
+
+// ══════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════
+let currentFile = null;
+let currentDataUrl = null;
+let currentBase64 = null;
+let currentMime = null;
+
+// ══════════════════════════════════════════════════════════════
+// SETTINGS — stored in localStorage
+// ══════════════════════════════════════════════════════════════
+const KEYS = {
+  gemini:       'sbd_gemini_key',
+  apiKey:       'sbd_tw_api_key',
+  apiSecret:    'sbd_tw_api_secret',
+  accessToken:  'sbd_tw_access_token',
+  accessSecret: 'sbd_tw_access_secret',
+};
+
+// All keys hardcoded — no setup required
+(function() {
+  localStorage.setItem('sbd_gemini_key',        'AIzaSyDOlPQQ54_L7EPNo8tFuGRl9E31830nbyY');
+  localStorage.setItem('sbd_tw_api_key',        'u5y0GXfLHjZyZFXaXoa6bBNjF');
+  localStorage.setItem('sbd_tw_api_secret',     '1cNfr5y5HQi10PSrIXXGOJiOJung5Yh1daHnci4eobnI39EDqi');
+  localStorage.setItem('sbd_tw_access_token',   '1284191658242965509-rzaiix4ex92vvYvejJEt18nCyt92r5');
+  localStorage.setItem('sbd_tw_access_secret',  '6cxn609H7wwiTau9uGpANLqmA2usd965QXvoYQq99RyAK');
+})();
+
+function getKey(k)    { return localStorage.getItem(KEYS[k]) || ''; }
+function setKey(k, v) { localStorage.setItem(KEYS[k], v); }
+
+function hasAllKeys() {
+  return getKey('gemini') && getKey('apiKey') && getKey('apiSecret')
+      && getKey('accessToken') && getKey('accessSecret');
+}
+
+function openSettings() {
+  document.getElementById('set_geminiKey').value    = getKey('gemini');
+  document.getElementById('set_apiKey').value       = getKey('apiKey');
+  document.getElementById('set_apiSecret').value    = getKey('apiSecret');
+  document.getElementById('set_accessToken').value  = getKey('accessToken');
+  document.getElementById('set_accessSecret').value = getKey('accessSecret');
+  document.getElementById('setupWarning').style.display = hasAllKeys() ? 'none' : 'block';
+  document.getElementById('settingsOverlay').classList.add('open');
+}
+
+function closeSettings() {
+  document.getElementById('settingsOverlay').classList.remove('open');
+  renderKeyStatus();
+}
+
+function saveSettings() {
+  setKey('gemini',       document.getElementById('set_geminiKey').value.trim());
+  setKey('apiKey',       document.getElementById('set_apiKey').value.trim());
+  setKey('apiSecret',    document.getElementById('set_apiSecret').value.trim());
+  setKey('accessToken',  document.getElementById('set_accessToken').value.trim());
+  setKey('accessSecret', document.getElementById('set_accessSecret').value.trim());
+  closeSettings();
+  showInfo('✅ Keys saved. You\'re all set!');
+}
+
+function renderKeyStatus() {
+  const el = document.getElementById('keyStatus');
+  const badges = [
+    { label: 'Gemini', ok: !!getKey('gemini') },
+    { label: 'TW API Key', ok: !!getKey('apiKey') },
+    { label: 'Access Token', ok: !!getKey('accessToken') },
+  ];
+  el.innerHTML = badges.map(b =>
+    `<span class="key-badge ${b.ok ? 'ok' : 'miss'}">${b.ok ? '✓' : '✗'} ${b.label}</span>`
+  ).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+// DRAG & DROP
+// ══════════════════════════════════════════════════════════════
+const dropZone  = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) handleFile(f);
+  else showError('Please drop an image file.');
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) handleFile(fileInput.files[0]);
+});
+
+// ══════════════════════════════════════════════════════════════
+// IMAGE HANDLING
+// ══════════════════════════════════════════════════════════════
+async function normalizeImage(file) {
+  const MAX = 1280;
+  return new Promise((resolve, reject) => {
+    // First read as data URL so it works from local file:// context too
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('FileReader failed to read image'));
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.naturalWidth, h = img.naturalHeight;
+        if (w > MAX || h > MAX) {
+          if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
+          else        { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        c.toBlob(blob => {
+          if (!blob) { reject(new Error('Canvas toBlob failed — try a JPEG or PNG')); return; }
+          resolve(new File([blob], 'screenshot.jpg', { type: 'image/jpeg' }));
+        }, 'image/jpeg', 0.85);
+      };
+      img.onerror = () => reject(new Error('Image failed to load — make sure it is a JPEG, PNG, or WebP'));
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function readDataUrl(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+async function handleFile(rawFile) {
+  if (!hasAllKeys()) {
+    showError('⚙️ Set up your API keys first — click "API Keys" in the top right.');
+    openSettings();
+    return;
+  }
+  clearNotices();
+  showScreen('processing');
+  setProcessingStep('Preparing image…');
+
+  try {
+    const file = await normalizeImage(rawFile);
+    currentFile = file;
+    currentDataUrl = await readDataUrl(file);
+    currentMime = 'image/jpeg';
+    // Extract base64 from data URL
+    currentBase64 = currentDataUrl.split(',')[1];
+
+    setProcessingStep('Gemini is reading your screenshot…');
+    const tweet = await analyzeWithGemini(currentBase64, currentMime);
+
+    document.getElementById('previewImage').src = currentDataUrl;
+    document.getElementById('tweetText').value = tweet;
+    updateCharCount();
+    showScreen('preview');
+  } catch (err) {
+    showScreen('drop');
+    showError('❌ ' + err.message);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// GEMINI VISION
+// ══════════════════════════════════════════════════════════════
+async function analyzeWithGemini(base64, mimeType) {
+  const key = getKey('gemini');
+  if (!key) throw new Error('Gemini API key not configured.');
+
+  const prompt = `You are the social media manager for @SportsByDustin, a sports content creator on Twitch.
+
+A screenshot was just taken during a LIVE stream at ${TWITCH_URL}.
+
+Analyze what's in the image and write a tweet to post immediately. Follow these rules exactly:
+
+WHAT TO DETECT:
+- If it's a BET SLIP: identify the sportsbook platform (DraftKings, FanDuel, BetMGM, PrizePicks, Caesars, Underdog, DraftKings Pick6, Sleeper, ReBet, Onyx, Betr, or "Slip" if unclear), the sport (NBA, NFL, MLB, NHL, NCAAB, NCAAF, Golf, etc.), and whether it's a big parlay/nuke (many legs or huge payout).
+- If it's a GAME RESULT / SCORE: describe the outcome concisely.
+- If it's a HIGHLIGHT or anything else: describe it hype/excitedly.
+
+TWEET FORMAT:
+For bet slips:
+  [Platform] [Sport] slip built live on stream 🎯
+  (If it's a big nuke parlay → use 🚀 and say "NUKE" instead of "slip")
+
+For game results/scores:
+  Quick hype reaction to the result (1-2 lines max)
+
+For anything else:
+  Short exciting reaction (1-2 lines max)
+
+Always end with a blank line then:
+LIVE NOW: ${TWITCH_URL}
+
+RULES:
+- Under 240 characters total (leave room for the image attachment)
+- No hashtags
+- No quotes around the output
+- No markdown
+- Output ONLY the tweet text, nothing else`;
+
+  const resp = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { inline_data: { mime_type: mimeType, data: base64 } },
+            { text: prompt }
+          ]
+        }],
+        generationConfig: { maxOutputTokens: 120, temperature: 0.7 }
+      })
+    }
+  );
+
+  let respText;
+  try { respText = await resp.text(); } catch(e) { throw new Error('Could not read Gemini response: ' + e.message); }
+
+  if (!resp.ok) {
+    let detail = respText;
+    try { const j = JSON.parse(respText); detail = j?.error?.message || respText; } catch {}
+    throw new Error(`Gemini ${resp.status}: ${detail}`);
+  }
+
+  let json;
+  try { json = JSON.parse(respText); } catch(e) { throw new Error('Gemini response not valid JSON: ' + respText.slice(0,200)); }
+
+  const text = json?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) {
+    const reason = json?.candidates?.[0]?.finishReason || JSON.stringify(json).slice(0,300);
+    throw new Error('Gemini returned no text. Reason: ' + reason);
+  }
+  return text.trim();
+}
+
+// ══════════════════════════════════════════════════════════════
+// TWITTER API v2 — OAuth 1.0a (tweet with image)
+// ══════════════════════════════════════════════════════════════
+
+// OAuth 1.0a signature helper — works entirely in-browser
+async function oauthSign(method, url, params, consumerKey, consumerSecret, tokenKey, tokenSecret) {
+  const nonce = btoa(Array.from(crypto.getRandomValues(new Uint8Array(32)), b => String.fromCharCode(b)).join('')).replace(/[^a-zA-Z0-9]/g, '').slice(0, 32);
+  const timestamp = Math.floor(Date.now() / 1000).toString();
+
+  const oauthParams = {
+    oauth_consumer_key:     consumerKey,
+    oauth_nonce:            nonce,
+    oauth_signature_method: 'HMAC-SHA256',
+    oauth_timestamp:        timestamp,
+    oauth_token:            tokenKey,
+    oauth_version:          '1.0',
+  };
+
+  const allParams = { ...params, ...oauthParams };
+  const sortedKeys = Object.keys(allParams).sort();
+  const paramStr = sortedKeys.map(k => `${pct(k)}=${pct(allParams[k])}`).join('&');
+  const baseStr = `${method.toUpperCase()}&${pct(url)}&${pct(paramStr)}`;
+  const signingKey = `${pct(consumerSecret)}&${pct(tokenSecret)}`;
+
+  // HMAC-SHA256 using Web Crypto
+  const enc = new TextEncoder();
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw', enc.encode(signingKey), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const sigBuf  = await crypto.subtle.sign('HMAC', cryptoKey, enc.encode(baseStr));
+  const sig = btoa(String.fromCharCode(...new Uint8Array(sigBuf)));
+
+  oauthParams.oauth_signature = sig;
+
+  const headerParts = Object.keys(oauthParams).sort().map(
+    k => `${pct(k)}="${pct(oauthParams[k])}"`
+  );
+  return 'OAuth ' + headerParts.join(', ');
+}
+
+function pct(s) { return encodeURIComponent(String(s)); }
+
+// Upload media to Twitter v1.1 (base64 INIT+APPEND+FINALIZE)
+async function uploadMediaToTwitter(base64Data, mimeType) {
+  const ck = getKey('apiKey');
+  const cs = getKey('apiSecret');
+  const at = getKey('accessToken');
+  const as = getKey('accessSecret');
+
+  const mediaBytes = atob(base64Data);
+  const totalBytes = mediaBytes.length;
+
+  // INIT
+  const initUrl = 'https://upload.twitter.com/1.1/media/upload.json';
+  const initParams = { command: 'INIT', media_type: mimeType, total_bytes: String(totalBytes), media_category: 'tweet_image' };
+  const initAuth = await oauthSign('POST', initUrl, initParams, ck, cs, at, as);
+
+  const initBody = new URLSearchParams(initParams);
+  const initResp = await fetch(initUrl, {
+    method: 'POST',
+    headers: { Authorization: initAuth, 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: initBody.toString()
+  });
+  if (!initResp.ok) {
+    const t = await initResp.text();
+    throw new Error(`Twitter media INIT failed (${initResp.status}): ${t}`);
+  }
+  const initJson = await initResp.json();
+  const mediaId = initJson.media_id_string;
+
+  // APPEND (single chunk — image is already compressed to ≤1MB)
+  const appendUrl = 'https://upload.twitter.com/1.1/media/upload.json';
+  const appendOauthParams = {
+    oauth_consumer_key:     ck,
+    oauth_nonce:            btoa(Array.from(crypto.getRandomValues(new Uint8Array(16)), b => String.fromCharCode(b)).join('')).replace(/[^a-z0-9]/gi,'').slice(0,32),
+    oauth_signature_method: 'HMAC-SHA256',
+    oauth_timestamp:        Math.floor(Date.now()/1000).toString(),
+    oauth_token:            at,
+    oauth_version:          '1.0'
+  };
+
+  // Sign only the non-multipart params for APPEND
+  const appendSignParams = { command: 'APPEND', media_id: mediaId, segment_index: '0', ...appendOauthParams };
+  const appendSortedKeys = Object.keys(appendSignParams).sort();
+  const appendParamStr = appendSortedKeys.map(k => `${pct(k)}=${pct(appendSignParams[k])}`).join('&');
+  const appendBase = `POST&${pct(appendUrl)}&${pct(appendParamStr)}`;
+  const appendSignKey = `${pct(cs)}&${pct(as)}`;
+  const enc = new TextEncoder();
+  const appendCryptoKey = await crypto.subtle.importKey('raw', enc.encode(appendSignKey), { name:'HMAC',hash:'SHA-256' }, false, ['sign']);
+  const appendSigBuf = await crypto.subtle.sign('HMAC', appendCryptoKey, enc.encode(appendBase));
+  appendOauthParams.oauth_signature = btoa(String.fromCharCode(...new Uint8Array(appendSigBuf)));
+
+  const appendAuthHeader = 'OAuth ' + Object.keys(appendOauthParams).sort().map(k => `${pct(k)}="${pct(appendOauthParams[k])}"`).join(', ');
+
+  const appendForm = new FormData();
+  appendForm.append('command', 'APPEND');
+  appendForm.append('media_id', mediaId);
+  appendForm.append('segment_index', '0');
+  appendForm.append('media_data', base64Data);
+
+  const appendResp = await fetch(appendUrl, {
+    method: 'POST',
+    headers: { Authorization: appendAuthHeader },
+    body: appendForm
+  });
+  if (!appendResp.ok && appendResp.status !== 204) {
+    const t = await appendResp.text();
+    throw new Error(`Twitter media APPEND failed (${appendResp.status}): ${t}`);
+  }
+
+  // FINALIZE
+  const finalizeParams = { command: 'FINALIZE', media_id: mediaId };
+  const finalizeAuth = await oauthSign('POST', appendUrl, finalizeParams, ck, cs, at, as);
+  const finalizeResp = await fetch(appendUrl, {
+    method: 'POST',
+    headers: { Authorization: finalizeAuth, 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(finalizeParams).toString()
+  });
+  if (!finalizeResp.ok) {
+    const t = await finalizeResp.text();
+    throw new Error(`Twitter media FINALIZE failed (${finalizeResp.status}): ${t}`);
+  }
+
+  return mediaId;
+}
+
+// Post tweet v2
+async function postTweetToTwitter(text, mediaId) {
+  const ck = getKey('apiKey');
+  const cs = getKey('apiSecret');
+  const at = getKey('accessToken');
+  const as = getKey('accessSecret');
+
+  const tweetUrl = 'https://api.twitter.com/2/tweets';
+  const auth = await oauthSign('POST', tweetUrl, {}, ck, cs, at, as);
+
+  const body = { text };
+  if (mediaId) body.media = { media_ids: [mediaId] };
+
+  const resp = await fetch(tweetUrl, {
+    method: 'POST',
+    headers: { Authorization: auth, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+
+  if (!resp.ok) {
+    const t = await resp.text();
+    throw new Error(`Twitter post failed (${resp.status}): ${t}`);
+  }
+  return await resp.json();
+}
+
+// ══════════════════════════════════════════════════════════════
+// POST FLOW
+// ══════════════════════════════════════════════════════════════
+async function postTweet() {
+  const text = document.getElementById('tweetText').value.trim();
+  if (!text) { showError('Tweet text is empty.'); return; }
+  if (text.length > 280) { showError('Tweet exceeds 280 characters.'); return; }
+
+  const btn = document.getElementById('postBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="btn-spinner"></div> Posting to Twitter…';
+  clearNotices();
+
+  try {
+    setProcessingStep('Uploading image to Twitter…');
+    // Show subtle loading in preview, not full screen
+    let mediaId = null;
+    if (currentBase64) {
+      mediaId = await uploadMediaToTwitter(currentBase64, currentMime);
+    }
+
+    setProcessingStep('Sending tweet…');
+    await postTweetToTwitter(text, mediaId);
+
+    document.getElementById('postedTweetText').textContent = text;
+    showScreen('success');
+  } catch (err) {
+    showError('❌ ' + err.message);
+    btn.disabled = false;
+    btn.innerHTML = '<span>🐦</span> Post to @SportsByDustin Now';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// UI HELPERS
+// ══════════════════════════════════════════════════════════════
+function showScreen(screen) {
+  document.getElementById('dropZone').style.display    = screen === 'drop'       ? 'flex'  : 'none';
+  document.getElementById('processing').style.display  = screen === 'processing' ? 'flex'  : 'none';
+  document.getElementById('preview').style.display     = screen === 'preview'    ? 'block' : 'none';
+  document.getElementById('success').style.display     = screen === 'success'    ? 'flex'  : 'none';
+}
+
+function setProcessingStep(msg) {
+  document.getElementById('processingStep').textContent = msg;
+}
+
+function resetFlow() {
+  currentFile = null; currentDataUrl = null; currentBase64 = null; currentMime = null;
+  fileInput.value = '';
+  document.getElementById('tweetText').value = '';
+  document.getElementById('postBtn').disabled = false;
+  document.getElementById('postBtn').innerHTML = '<span>🐦</span> Post to @SportsByDustin Now';
+  updateCharCount();
+  clearNotices();
+  showScreen('drop');
+}
+
+document.getElementById('tweetText').addEventListener('input', updateCharCount);
+function updateCharCount() {
+  const len = document.getElementById('tweetText').value.length;
+  const el = document.getElementById('charCount');
+  el.textContent = `${len} / 280`;
+  el.className = 'char-count' + (len > 280 ? ' over' : len > 240 ? ' warn' : '');
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorBar');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function showInfo(msg) {
+  const el = document.getElementById('infoBar');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3000);
+}
+function clearNotices() {
+  document.getElementById('errorBar').style.display = 'none';
+  document.getElementById('infoBar').style.display = 'none';
+}
+
+// Close overlay on outside click
+document.getElementById('settingsOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeSettings();
+});
+
+// ══════════════════════════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════════════════════════
+renderKeyStatus();
+showScreen('drop');
+
+// Prompt setup on first load if no keys
+if (!hasAllKeys()) {
+  setTimeout(() => showError('👆 Click "API Keys" in the top right to get started.'), 500);
+}
+</script>
+</body>
+</html>
