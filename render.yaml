@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: sportsbydustin-tweet-bot
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: BUFFER_ACCESS_TOKEN
+        sync: false
+      - key: BUFFER_CHANNEL_ID
+        sync: false
+      - key: IMGBB_API_KEY
+        sync: false
+      - key: TWITCH_URL
+        value: Twitch.tv/SportsByDustin
